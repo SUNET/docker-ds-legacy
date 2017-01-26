@@ -3,29 +3,19 @@
 rm -f /etc/apache2/sites-available/*
 rm -f /etc/apache2/sites-enabled/*
 
-# optionally ship acme challenges to an external tool
-
-if [ ! -z "${ACME_URL}" ]; then
-
 cat>/etc/apache2/conf-available/acme.conf<<EOF
-ProxyPass /.well-known/acme-challenge ${ACME_URL}/.well-known/acme-challenge/
-ProxyPassReverse /.well-known/acme-challenge ${ACME_URL}/.well-known/acme-challenge/
+ProxyPass /.well-known/acme-challenge http://acme-c.sunet.se/.well-known/acme-challenge/
+ProxyPassReverse /.well-known/acme-challenge http://acme-c.sunet.se/.well-known/acme-challenge/
 EOF
+
 a2enconf acme
 a2enmod proxy proxy_http
 
-fi
-
-
-if [ -z "${URLS}" ]; then
-
-# In this mode we only redirect to https on $self
-
-   echo "ok" > /var/www/_lvs.txt
-   cat>/etc/apache2/sites-available/default.conf<<EOF
+echo "ok" > /var/www/_lvs.txt
+cat>/etc/apache2/sites-available/default.conf<<EOF
 <VirtualHost *:80>
        ServerAdmin noc@sunet.se
-       ServerName localhost
+       ServerName ${HOSTNAME}
        DocumentRoot /var/www/
 
        RewriteEngine On
@@ -35,25 +25,6 @@ if [ -z "${URLS}" ]; then
 EOF
 
 a2ensite default
-
-else
-
-## In this mode we redirect everything on https on an external URL
-## while preserving the query parameters
-## http
-
-   cat>/etc/apache2/sites-available/default.conf<<EOF
-<VirtualHost *:80>
-       ServerAdmin noc@sunet.se
-       DocumentRoot /var/www/
-
-       RewriteEngine On
-       RewriteCond %{HTTPS} off
-       RewriteRule !_lvs.txt$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301]
-</VirtualHost>
-EOF
-
-## https
 
 KEYDIR=/etc/ssl
 mkdir -p $KEYDIR
@@ -79,7 +50,7 @@ elif [ -f "$KEYDIR/certs/chain.pem" ]; then
    CHAINSPEC="SSLCertificateChainFile $KEYDIR/certs/chain.pem"
 fi
 
-   cat>/etc/apache2/sites-available/default-ssl.conf<<EOF
+cat>/etc/apache2/sites-available/default-ssl.conf<<EOF
 <VirtualHost *:443>
        ServerAdmin noc@sunet.se
        DocumentRoot /var/www/
@@ -94,20 +65,12 @@ fi
        SSLCertificateKeyFile $KEYDIR/private/${HOSTNAME}.key
 
        RewriteEngine On
-EOF
-   for map in ${URLS}; do
-      from=`echo $map | awk -F% '{print $1}'`
-      to=`echo $map | awk -F% '{print $2}'`
-      echo "       RewriteRule ^$from\$ $to%{QUERY_STRING} [R=301,END]" >> /etc/apache2/sites-available/default-ssl.conf
-   done
-cat>>/etc/apache2/sites-available/default-ssl.conf<<EOF
 </VirtualHost>
 EOF
 
 a2enmod ssl
 a2ensite default-ssl
 a2ensite default
-fi
 
 mkdir -p /var/log/apache2 /var/lock/apache2 /var/run/apache2
 chown -R www-data:www-data /var/log/apache2 /var/lock/apache2 /var/run/apache2
