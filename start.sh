@@ -31,6 +31,7 @@ mkdir -p $KEYDIR
 export KEYDIR
 
 if [ ! -f "$KEYDIR/private/${HOSTNAME}.key" -o ! -f "$KEYDIR/certs/${HOSTNAME}.crt" ]; then
+   rm -f "$KEYDIR/private/${HOSTNAME}.key" "$KEYDIR/certs/${HOSTNAME}.crt"
    make-ssl-cert generate-default-snakeoil --force-overwrite
    cp /etc/ssl/private/ssl-cert-snakeoil.key "$KEYDIR/private/${HOSTNAME}.key"
    cp /etc/ssl/certs/ssl-cert-snakeoil.pem "$KEYDIR/certs/${HOSTNAME}.crt"
