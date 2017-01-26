@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--[if lte IE 6]><html class="preIE7 preIE8 preIE9"><![endif]-->
+<!--[if IE 7]><html class="preIE8 preIE9"><![endif]-->
+<!--[if IE 8]><html class="preIE9"><![endif]-->
+<!--[if gte IE 9]><!--><html><!--<![endif]-->
+  <head>
+    <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>title</title>
+  <meta name="author" content="name">
+  <meta name="description" content="description here">
+  <meta name="keywords" content="keywords,here">
+  <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <header>
+      <nav class="navbar navbar-default">
+        <div  class="container-fluid">
+          <div class="row">
+            <div class="col-xs-4">
+              <a href="index.html">
+                <span class="logo"></span>
+              </a>
+            </div>
+            <div class="col-xs-8"><div class="pull-right"><span>&nbsp;</span></div></div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <div class="container-fluid">
+       <div class="jumbotron">
+          <h1>Sorry but ...</h1>
+
+          <p>.. this is not the way to get to SWAMID login options - maybe you have an old link or a saved bookmark or maybe the service you are trying to use hasn't been updated for a very long time...</p>
+          <p>If you are feeling lucky you can try clicking on this button below (which may or may not work).</p>
+          <p>If you have the time consider contacting the owner of the service you are trying to use and ask them to read <a href="https://wiki.swamid.se/display/SWAMID/Identity+Provider+Discovery">the SWAMID discovery service guide</a>.</p>
+
+          <button id="gobutton" class="btn btn-warning">Clicking this button may help...</button>
+       </div>
+    </div>
+
+    <!-- footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-3">
+              <a href="#"><span class="icon-worker icon"></span><span class="hidden-sm hidden-xs icon-right-text">Medarbetare</span></a>
+          </div>
+          <div class="col-xs-3">
+              <a href="#"><span class="icon-map icon"></span><span class="hidden-sm hidden-xs icon-right-text">Visa på karta</span></a>
+          </div>
+          <div class="col-xs-3">
+              <a href="#"><span class="icon-tel icon"></span><span class="hidden-sm hidden-xs icon-right-text">090 - 20 59 100</span></a>
+          </div>
+          <div class="col-xs-3">
+              <a href="#"><span class="icon-email icon"></span><span class="hidden-sm hidden-xs icon-right-text">info@sunet.se</span></a>
+          </div>
+        </div>
+      </div>
+    </footer -->
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+   function go()
+   {
+      var uri = 'https://md.nordu.net/role/idp.ds';
+      uri = uri + document.location.search;
+
+      window.location.href = uri;
+      return 0;
+   }
+   $(function() {
+      $("#gobutton").click(go);
+   });
+  </script>
+  </body>
+</html>
