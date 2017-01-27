@@ -66,6 +66,7 @@ cat>/etc/apache2/sites-available/default-ssl.conf<<EOF
        SSLCertificateKeyFile $KEYDIR/private/${HOSTNAME}.key
 
        RewriteEngine On
+       RewriteRule "/discovery/.+" https://%{HTTP_HOST}/?%{QUERY_STRING} [R=301,B,NE]
 </VirtualHost>
 EOF
 
